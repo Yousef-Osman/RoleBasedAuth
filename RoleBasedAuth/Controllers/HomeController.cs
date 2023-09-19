@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RoleBasedAuth.Models;
+using RoleBasedAuth.Models.Enums;
 using System.Data;
 using System.Diagnostics;
 
@@ -25,13 +26,13 @@ public class HomeController : Controller
         return View();
     }
 
-    [Authorize(Roles = "Manager, Admin")]
+    [Authorize(Roles = nameof(UserRoles.Manager) + "," + nameof(UserRoles.Admin))]
     public IActionResult Manager()
     {
         return View();
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = nameof(UserRoles.Admin))]
     public IActionResult Admin()
     {
         return View();
