@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RoleBasedAuth.Models;
+using System.Data;
 using System.Diagnostics;
 
 namespace RoleBasedAuth.Controllers;
@@ -17,7 +19,21 @@ public class HomeController : Controller
         return View();
     }
 
+
+    [Authorize]
     public IActionResult Privacy()
+    {
+        return View();
+    }
+
+    [Authorize(Roles = "User, Admin")]
+    public IActionResult UserData()
+    {
+        return View();
+    }
+
+    [Authorize(Roles = "Admin")]
+    public IActionResult Admin()
     {
         return View();
     }
