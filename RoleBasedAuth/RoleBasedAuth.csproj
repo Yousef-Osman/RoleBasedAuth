@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-RoleBasedAuth-89da9ee6-dc8a-4f35-b3cb-9a8cd31f862d</UserSecretsId>
   </PropertyGroup>

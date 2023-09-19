@@ -19,15 +19,14 @@ public class HomeController : Controller
         return View();
     }
 
-
     [Authorize]
     public IActionResult Privacy()
     {
         return View();
     }
 
-    [Authorize(Roles = "User, Admin")]
-    public IActionResult UserData()
+    [Authorize(Roles = "Manager, Admin")]
+    public IActionResult Manager()
     {
         return View();
     }
