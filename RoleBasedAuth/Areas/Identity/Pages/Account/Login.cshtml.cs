@@ -18,11 +18,13 @@ namespace RoleBasedAuth.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
             _logger = logger;
         }
 
@@ -39,8 +41,9 @@ namespace RoleBasedAuth.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            //[EmailAddress]
+            [Display(Name = "Username or Email")]
+            public string UserName { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
@@ -76,9 +79,24 @@ namespace RoleBasedAuth.Areas.Identity.Pages.Account
             if (!ModelState.IsValid)
                 return Page();
 
+            string username = Input.UserName;
+
+            //check if the userName is a valid email. if yes, get the username
+            if (new EmailAddressAttribute().IsValid(username))
+            {
+                var userData = await _userManager.FindByEmailAsync(username);
+                if (userData == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return Page();
+                }
+
+                username = userData.UserName;
+            }
+
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in.");
