@@ -1,0 +1,26 @@
+﻿@model IEnumerable<IdentityUser>;
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+
+<section class="col-md-6 mx-auto">
+    <div class="card shadow p-5 mt-5">
+        <div class="d-flex mb-3">
+            <h4 class="me-auto text-dimgrey">Users</h4>
+        </div>
+        <ul class="list-group">
+            @foreach (var user in Model)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-content-center my-1">
+                        <p class="mb-0 align-self-center">@user.UserName</p>
+                        <a asp-action="EditUserRole" asp-route-id="@user.Id" class="btn btn-warning"><i class="fas fa-edit text-white"></i></a>
+                    </div>
+                </li>
+            }
+        </ul>
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary mt-3 px-3 ms-auto">Back</a>
+    </div>
+</section>
