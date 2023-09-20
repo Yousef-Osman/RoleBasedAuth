@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using RoleBasedAuth.Models.Enums;
 
 namespace RoleBasedAuth.Areas.Identity.Pages.Account
 {
@@ -96,7 +97,7 @@ namespace RoleBasedAuth.Areas.Identity.Pages.Account
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "User");
+                await _userManager.AddToRoleAsync(user, nameof(UserRoles.User));
                 _logger.LogInformation("User created a new account with password.");
 
                 var userId = await _userManager.GetUserIdAsync(user);
