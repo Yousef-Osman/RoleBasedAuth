@@ -80,7 +80,7 @@ public class AdminController : Controller
                 await _userManager.AddToRoleAsync(user, role.Name);
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Users));
     }
 }
 

@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using RoleBasedAuth.Data;
+using RoleBasedAuth.ViewModels;
 
 namespace RoleBasedAuth.Controllers;
 public class RolesController : Controller
@@ -25,8 +28,7 @@ public class RolesController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddRole(IdentityRole model)
+    public async Task<IActionResult> AddRole(RoleVM model)
     {
         if (!ModelState.IsValid)
             return View(model);
