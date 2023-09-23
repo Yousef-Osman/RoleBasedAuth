@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Elfie.Extensions;
 using Microsoft.EntityFrameworkCore;
-using RoleBasedAuth.Data;
+using RoleBasedAuth.Models.Enums;
 using RoleBasedAuth.ViewModels;
+using System.Data;
 
 namespace RoleBasedAuth.Controllers;
+
+[Authorize(Roles = nameof(UserRoles.Admin))]
 public class AdminController : Controller
 {
     private readonly RoleManager<IdentityRole> _roleManager;

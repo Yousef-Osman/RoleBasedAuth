@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
-using RoleBasedAuth.Data;
+using RoleBasedAuth.Models.Enums;
 using RoleBasedAuth.ViewModels;
+using System.Data;
 
 namespace RoleBasedAuth.Controllers;
+
+[Authorize(Roles = nameof(UserRoles.Admin))]
 public class RolesController : Controller
 {
     private readonly RoleManager<IdentityRole> _roleManager;
@@ -31,17 +34,22 @@ public class RolesController : Controller
     public async Task<IActionResult> AddRole(RoleVM model)
     {
         if (!ModelState.IsValid)
-            return View(model);
+            return Json(new { isSuccess = false, errors = GetErrorList(ModelState) });
 
         if (await _roleManager.RoleExistsAsync(model.Name))
         {
             ModelState.AddModelError("Name", "Role exists");
-            return View(model);
+            return Json(new { isSuccess = false, errors = GetErrorList(ModelState) });
         }
 
-        await _roleManager.CreateAsync(new IdentityRole(model.Name));
+        //await _roleManager.CreateAsync(new IdentityRole(model.Name));
 
-        return RedirectToAction(nameof(Index));
+        return Ok(new { isSuccess = true });
+    }
+
+    private List<string> GetErrorList(ModelStateDictionary modelState)
+    {
+        return modelState.Values.SelectMany(x => x.Errors.Select(c => c.ErrorMessage)).ToList();
     }
 
     public async Task<IActionResult> EditRole(string id)

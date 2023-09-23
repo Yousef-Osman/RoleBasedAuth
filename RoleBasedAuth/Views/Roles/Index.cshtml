@@ -5,11 +5,13 @@
     var roleModel = new RoleVM();
 }
 
-<section class="col-md-6 mx-auto">
+<partial name="_ResultAlerts"/>
+
+<section class="col-md-8 mx-auto">
     <div class="card shadow p-5 mt-5">
         <div class="d-flex mb-3">
             <h4 class="me-auto text-dimgrey">User Roles</h4>
-            <a class="btn btn-primary align-self-start" data-bs-toggle="modal" data-bs-target="#addRoleModal"><i class="fa-solid fa-plus"></i></a>
+            <a class="btn btn-primary align-self-start" data-bs-toggle="modal" data-bs-target="#add-role-modal"><i class="fa-solid fa-plus"></i></a>
             @*<a class="btn btn-primary align-self-start" asp-action="AddRole"><i class="fa-solid fa-plus"></i></a>*@
         </div>
         <ul class="list-group">
@@ -27,28 +29,9 @@
     </div>
 </section>
 
-<div class="modal fade" id="addRoleModal" tabindex="-1" aria-labelledby="addRoleModal" aria-hidden="true">
-    @*<partial name="_addrolepartial" model="new IdentityRole()" />*@
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-body px-5 py-4">
-                <h4 class="my-3 text-success">Add new role</h4>
-                <form method="post" id="add-form">
-                    <div class="mb-3">
-                        <label class="form-label" asp-for="@roleModel.Name"></label>
-                        <input class="form-control" asp-for="@roleModel.Name" id="role-name" />
-                        <span class="text-danger" asp-validation-for="@roleModel.Name"></span>
-                    </div>
-                    <div class="d-flex justify-content-end mb-3">
-                        <button type="submit" class="btn btn-success px-3 me-1">Save</button>
-                        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<div class="modal fade" id="add-role-modal" tabindex="-1" aria-hidden="true">
+    <partial name="_AddRolePartial" model="new RoleVM()" />
 </div>
-
 
 @section Scripts {
     @{
@@ -56,15 +39,18 @@
     }
     <script>
         document.addEventListener("DOMContentLoaded", function (event) {
-            document.getElementById('add-form').onsubmit = function (e) {
+            const addRoleModal = new bootstrap.Modal(document.getElementById('add-role-modal'));
+            const successAlert = document.getElementById('success-alert');
+            const dangerAlert = document.getElementById('danger-alert');
 
-                if (!$(this).valid()) {
+            document.getElementById('add-form').onsubmit = function (e) {
+                document.getElementById('add-validation-result').innerHTML = '';
+
+                if (!$(this).valid())
                     return;
-                } 
 
                 e.preventDefault();
-                var form = new FormData();
-                form.append("Name", document.getElementById('role-name').value);
+                var form = new FormData(e.target);
 
                 fetch('/Roles/AddRole', {
                     method: 'Post',
@@ -77,11 +63,32 @@
 
                     return response.json();
                 }).then(data => {
-                    console.log('success');
+                    if (data.isSuccess) {
+                        addRoleModal.hide();
+                        successAlert.hidden = false;
+                        setTimeout(function () { successAlert.hidden = true; }, 3000);
+                        e.target.reset();
+                    } else {
+                        displayValidationError(data.errors, 'add-validation-result');
+                    }
                 }).catch(error => {
-                    console.log('error');
+                    addRoleModal.hide();
+                    dangerAlert.hidden = false;
+                    setTimeout(function () { dangerAlert.hidden = true; }, 3000);
                 });
-            }
+
+                function displayValidationError(errors, element) {
+                    let validationDiv = document.getElementById(element);
+                    errors.forEach(error => {
+                        validationDiv.innerHTML += `<li>${error}</li>`;
+                    });
+                };
+
+
+                document.getElementById('cancel-add-btn').onclick = function (e) {
+                    document.getElementById('add-form').reset();
+                };
+            };
         });
     </script>
 }
