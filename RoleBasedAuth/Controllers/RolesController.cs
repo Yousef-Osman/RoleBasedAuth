@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using RoleBasedAuth.Data;
+using RoleBasedAuth.Helpers;
 using RoleBasedAuth.Models.Enums;
 using RoleBasedAuth.ViewModels;
 using System.Data;
@@ -32,17 +33,17 @@ public class RolesController : Controller
     public async Task<IActionResult> AddRole(RoleVM model)
     {
         if (!ModelState.IsValid)
-            return Json(new JsonResult { isSuccess = false, errors = GetErrorList(ModelState) });
+            return Json(new JsonResponse { IsSuccess = false, Errors = GetErrorList(ModelState) });
 
         if (await _roleManager.RoleExistsAsync(model.Name))
         {
             ModelState.AddModelError("Name", "Role exists");
-            return Json(new JsonResult { isSuccess = false, errors = GetErrorList(ModelState) });
+            return Json(new JsonResponse { IsSuccess = false, Errors = GetErrorList(ModelState) });
         }
 
         await _roleManager.CreateAsync(new IdentityRole(model.Name));
 
-        return Ok(new JsonResult { isSuccess = true });
+        return Ok(new JsonResponse { IsSuccess = true });
     }
 
     public async Task<IActionResult> EditRole(string id)
@@ -81,32 +82,25 @@ public class RolesController : Controller
     public async Task<IActionResult> DeleteRole([FromBody] RoleVM model)
     {
         if (string.IsNullOrWhiteSpace(model?.Id))
-            return Json(new JsonResult { isSuccess = false, errorMessage = "Invalid role" });
+            return Json(new JsonResponse { IsSuccess = false, ErrorMessage = "Invalid role" });
 
         var role = await _roleManager.FindByIdAsync(model.Id);
         if (role == null)
-            return Json(new JsonResult { isSuccess = false, errorMessage = "Role doesn't exists." });
+            return Json(new JsonResponse { IsSuccess = false, ErrorMessage = "Role doesn't exists." });
 
         var exists = _context.UserRoles.Any(a => a.RoleId == role.Id);
         if (exists)
-            return Json(new JsonResult { isSuccess = false, errorMessage = "Can't delete role." });
+            return Json(new JsonResponse { IsSuccess = false, ErrorMessage = "Can't delete role." });
 
         var result = await _roleManager.DeleteAsync(role);
         if (result.Succeeded)
-            return Ok(new JsonResult { isSuccess = true });
+            return Ok(new JsonResponse { IsSuccess = true });
         else
-            return Json(new { isSuccess = false, errorMessage = "Something went wrong." });
+            return Json(new JsonResponse { IsSuccess = false, ErrorMessage = "Something went wrong." });
     }
 
     private List<string> GetErrorList(ModelStateDictionary modelState)
     {
         return modelState.Values.SelectMany(x => x.Errors.Select(c => c.ErrorMessage)).ToList();
     }
-}
-
-public class JsonResult
-{
-    public bool isSuccess { get; set; }
-    public List<string> errors { get; set; }
-    public string errorMessage { get; set; }
 }
