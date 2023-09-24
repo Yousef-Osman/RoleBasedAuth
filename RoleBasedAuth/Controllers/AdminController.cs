@@ -9,7 +9,7 @@ using System.Data;
 
 namespace RoleBasedAuth.Controllers;
 
-[Authorize(Roles = nameof(UserRoles.SuperAdmin))]
+[Authorize(Roles = nameof(UserRoles.SuperAdmin) + "," + nameof(UserRoles.Admin))]
 public class AdminController : Controller
 {
     private readonly RoleManager<IdentityRole> _roleManager;

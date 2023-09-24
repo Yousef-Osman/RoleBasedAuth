@@ -11,7 +11,7 @@ using System.Data;
 
 namespace RoleBasedAuth.Controllers;
 
-[Authorize(Roles = nameof(UserRoles.SuperAdmin))]
+[Authorize(Roles = nameof(UserRoles.SuperAdmin) + "," + nameof(UserRoles.Admin))]
 public class RolesController : Controller
 {
     private readonly ApplicationDbContext _context;

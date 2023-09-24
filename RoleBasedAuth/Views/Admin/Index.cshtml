@@ -2,6 +2,18 @@
     ViewData["Title"] = "Admin";
 }
 
-<h2>This is an authorized view by role "Admin"</h2>
-<a class="btn btn-outline-primary" asp-controller="Roles" asp-action="Index">Roles</a>
-<a class="btn btn-outline-primary" asp-controller="Admin" asp-action="Users">User Roles</a>
+<div>
+    <h1 class="display-4">Admin Page</h1>
+    <p class="lead text-dimgrey mb-2">
+        <strong>
+            This page is accessible by any user in the following roles:
+        </strong>
+    </p>
+    <ul>
+        <li class="lead text-primary"><strong>Super Admin</strong></li>
+        <li class="lead text-primary"><strong>Admin</strong></li>
+    </ul>
+</div>
+
+<a class="btn btn-outline-success" asp-controller="Roles" asp-action="Index">Roles</a>
+<a class="btn btn-outline-success" asp-controller="Admin" asp-action="Users">User Roles</a>
