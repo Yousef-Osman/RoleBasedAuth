@@ -26,13 +26,13 @@ public class HomeController : Controller
         return View();
     }
 
-    [Authorize(Roles = nameof(UserRoles.Manager) + "," + nameof(UserRoles.Admin))]
+    [Authorize(Roles = nameof(UserRoles.SuperAdmin) + "," + nameof(UserRoles.Admin))]
     public IActionResult Manager()
     {
         return View();
     }
 
-    [Authorize(Roles = nameof(UserRoles.Admin))]
+    [Authorize(Roles = nameof(UserRoles.SuperAdmin))]
     public IActionResult Admin()
     {
         return View();

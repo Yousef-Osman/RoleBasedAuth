@@ -2,7 +2,8 @@
 
 public enum UserRoles
 {
-    User,
+    SuperAdmin,
+    Admin,
     Manager,
-    Admin
+    User,
 }

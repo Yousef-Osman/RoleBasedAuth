@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Elfie.Extensions;
 using Microsoft.EntityFrameworkCore;
+using RoleBasedAuth.Data;
 using RoleBasedAuth.Models.Enums;
 using RoleBasedAuth.ViewModels;
 using System.Data;
 
 namespace RoleBasedAuth.Controllers;
 
-[Authorize(Roles = nameof(UserRoles.Admin))]
+[Authorize(Roles = nameof(UserRoles.SuperAdmin))]
 public class AdminController : Controller
 {
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+    public AdminController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
     {
         _roleManager = roleManager;
         _userManager = userManager;
@@ -28,7 +28,7 @@ public class AdminController : Controller
 
     public async Task<IActionResult> Users()
     {
-        var users = await _userManager.Users.Select(a => new IdentityUser
+        var users = await _userManager.Users.Select(a => new ApplicationUser
         {
             Id = a.Id,
             UserName = a.UserName
